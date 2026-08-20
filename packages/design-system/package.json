@@ -4,6 +4,7 @@
   "private": true,
   "main": "src/index.ts",
   "scripts": {
+    "build": "npm run build:css",
     "build:css": "tailwindcss -i ./src/index.css -o ./dist/style.css",
     "test": "jest"
   },
