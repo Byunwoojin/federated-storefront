@@ -14,8 +14,8 @@ module.exports = (env, argv) => {
     : "cart_remote@https://cart-remote-murex.vercel.app/remoteEntry.js";
 
   return {
-    entry: "./src/index.jsx",
-    mode: "development",
+    entry: "./src/index.ts",
+    mode: isDev ? "development" : "production",
     devServer: {
       port: 3000,
     },
@@ -46,7 +46,6 @@ module.exports = (env, argv) => {
           "react-dom": { singleton: true },
         },
       }),
-      ,
       new HtmlWebpackPlugin({ template: "./public/index.html" }),
     ],
   };
