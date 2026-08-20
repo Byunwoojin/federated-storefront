@@ -31,6 +31,12 @@ const products: Product[] = [
     name: "니트 가디건",
     price: 45000,
   },
+  {
+    id: 5,
+    imageUrl: "https://placehold.co/240x240",
+    name: "체크 셔츠",
+    price: 32000,
+  },
 ];
 
 export default function CatalogPage() {
