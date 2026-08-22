@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+
 import Modal from "./Modal";
 
 test("isOpen이 false면 아무것도 렌더링하지 않는다", () => {
