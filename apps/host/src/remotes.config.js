@@ -12,7 +12,7 @@ const remotes = [
   {
     name: "order_remote",
     devUrl: "http://localhost:3005/remoteEntry.js",
-    prodUrl: "https://federated-storefront-rsev.vercel.app/remoteEntry.js", // TODO: Vercel 배포 후 실제 URL로 교체
+    prodUrl: "https://federated-storefront-rsev.vercel.app/remoteEntry.js",
   },
 ];
 
