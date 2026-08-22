@@ -41,7 +41,7 @@ test("- 버튼을 클릭하면 onDecrement 호출된다", async () => {
     />,
   );
 
-  await user.click(screen.getByRole("button", { name: "+" }));
+  await user.click(screen.getByRole("button", { name: "-" }));
   expect(handleDecrement).toHaveBeenCalledTimes(1);
 });
 
