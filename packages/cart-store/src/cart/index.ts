@@ -1,5 +1,7 @@
 import { create } from "zustand";
 
+import { remainingStock, useStockStore } from "../stock";
+
 export interface Product {
   productId: string;
   name: string;
@@ -15,7 +17,6 @@ interface CartState {
   items: CartItem[];
   addItem: (item: Product, quantity?: number) => void;
   removeItem: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
   increment: (productId: string) => void;
   decrement: (productId: string) => void;
   clear: () => void;
@@ -25,12 +26,14 @@ export const useCartStore = create<CartState>((set) => ({
   items: [],
   addItem: (item, quantity = 1) =>
     set((state) => {
+      const available = remainingStock(
+        item.stock,
+        item.productId,
+        useStockStore.getState().orderedQuantityByProductId,
+      );
       const existing = state.items.find((i) => i.productId === item.productId);
       if (existing) {
-        const nextQuantity = Math.min(
-          existing.quantity + quantity,
-          existing.stock,
-        );
+        const nextQuantity = Math.min(existing.quantity + quantity, available);
         return {
           items: state.items.map((i) =>
             i.productId === item.productId
@@ -43,7 +46,7 @@ export const useCartStore = create<CartState>((set) => ({
       return {
         items: [
           ...state.items,
-          { ...item, quantity: Math.min(quantity, item.stock) },
+          { ...item, quantity: Math.min(quantity, available) },
         ],
       };
     }),
@@ -52,22 +55,20 @@ export const useCartStore = create<CartState>((set) => ({
       items: state.items.filter((i) => i.productId !== productId),
     }));
   },
-  updateQuantity: (proudctId, quantity) => {
-    set((state) => ({
-      items: state.items.map((i) =>
-        i.productId === proudctId
-          ? { ...i, quantity: Math.max(1, Math.min(quantity, i.stock)) }
-          : i,
-      ),
-    }));
-  },
   increment: (productId) => {
     set((state) => ({
       items: state.items.map((i) =>
         i.productId === productId
           ? {
               ...i,
-              quantity: Math.min(i.quantity + 1, i.stock),
+              quantity: Math.min(
+                i.quantity + 1,
+                remainingStock(
+                  i.stock,
+                  i.productId,
+                  useStockStore.getState().orderedQuantityByProductId,
+                ),
+              ),
             }
           : i,
       ),

@@ -26,6 +26,14 @@ export const useStockStore = create<StockState>()((set) => ({
   },
 }));
 
+export function remainingStock(
+  totalStock: number,
+  productId: string,
+  orderedQuantityByProductId: Record<string, number>,
+): number {
+  return Math.max(0, totalStock - (orderedQuantityByProductId[productId] ?? 0));
+}
+
 interface StockCheckableItem {
   productId: string;
   quantity: number;
@@ -43,9 +51,10 @@ export function findInsufficientStockItems<T extends StockCheckableItem>(
   return items
     .map((item) => ({
       item,
-      remaining: Math.max(
-        0,
-        item.stock - (orderedQuantityByProductId[item.productId] ?? 0),
+      remaining: remainingStock(
+        item.stock,
+        item.productId,
+        orderedQuantityByProductId,
       ),
     }))
     .filter(({ item, remaining }) => item.quantity > remaining);

@@ -1,4 +1,4 @@
-import { useCartStore, useStockStore } from "@mfe/cart-store";
+import { remainingStock, useCartStore, useStockStore } from "@mfe/cart-store";
 import { Card, Toast } from "@mfe/design-system";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -36,8 +36,7 @@ export default function CatalogPage() {
           {products.map((p) => {
             const remaining = Math.max(
               0,
-              p.stock -
-                (orderedQuantityByProductId[p.id] ?? 0) -
+              remainingStock(p.stock, p.id, orderedQuantityByProductId) -
                 (cartItems.find((item) => item.productId === p.id)?.quantity ??
                   0),
             );

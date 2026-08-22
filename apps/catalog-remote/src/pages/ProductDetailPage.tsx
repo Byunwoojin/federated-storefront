@@ -1,4 +1,4 @@
-import { useCartStore, useStockStore } from "@mfe/cart-store";
+import { remainingStock, useCartStore, useStockStore } from "@mfe/cart-store";
 import { Button, QuantityStepper, Toast } from "@mfe/design-system";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -33,10 +33,10 @@ export default function ProductDetailPage() {
   }
   const remaining = Math.max(
     0,
-    product.stock -
-      (orderedQuantityByProductId[product.id] ?? 0) -
+    remainingStock(product.stock, product.id, orderedQuantityByProductId) -
       (cartItems.find((item) => item.productId === product.id)?.quantity ?? 0),
   );
+
   const soldOut = remaining === 0;
 
   const handleAddToCart = () => {

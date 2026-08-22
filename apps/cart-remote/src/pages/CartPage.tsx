@@ -2,6 +2,7 @@ import {
   CartItem,
   findInsufficientStockItems,
   InsufficientStockItem,
+  remainingStock,
   selectSubtotal,
   useCartStore,
   useStockStore,
@@ -91,9 +92,10 @@ export default function CartPage() {
 
         <ul className="mt-4 flex flex-col gap-4">
           {items.map((item) => {
-            const availableForThisItem = Math.max(
-              0,
-              item.stock - (orderedQuantityByProductId[item.productId] ?? 0),
+            const availableForThisItem = remainingStock(
+              item.stock,
+              item.productId,
+              orderedQuantityByProductId,
             );
             return (
               <li
