@@ -1,6 +1,17 @@
-const { ModuleFederationPlugin } = require("webpack").container;
 const path = require("path");
+
+const {
+  ModuleFederationPlugin,
+} = require("@module-federation/enhanced/webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+
+const {
+  buildPageExposes,
+  buildPagesManifest,
+  PagesManifestPlugin,
+} = require("../../packages/webpack-utils");
+
+const pagesDir = path.resolve(__dirname, "src/pages");
 
 module.exports = {
   entry: "./src/index.ts",
@@ -36,15 +47,22 @@ module.exports = {
       name: "catalog_remote",
       filename: "remoteEntry.js",
       exposes: {
-        "./CatalogPage": "./src/CatalogPage",
+        ...buildPageExposes(pagesDir),
         "./styles": "./src/styles-entry",
+      },
+      dts: {
+        generateTypes: {
+          compilerInstance: "tsc",
+        },
       },
       shared: {
         react: { singleton: true },
         "react-dom": { singleton: true },
+        "react-router-dom": { singleton: true },
+        "@mfe/cart-store": { singleton: true },
       },
     }),
-    ,
+    new PagesManifestPlugin(buildPagesManifest(pagesDir, "catalog_remote")),
     new HtmlWebpackPlugin({ template: "./public/index.html" }),
   ],
 };

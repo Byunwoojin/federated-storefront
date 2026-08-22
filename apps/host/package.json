@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "npm run build --workspace=@mfe/design-system && webpack --mode production",
-    "dev": "webpack serve --mode development"
+    "build": "npm run build --workspace=@mfe/design-system && tsc --noEmit && webpack --mode production",
+    "dev": "webpack serve --mode development",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix"
   },
   "keywords": [],
   "author": "",
@@ -12,8 +14,11 @@
   "description": "",
   "dependencies": {
     "@mfe/design-system": "*",
+    "@module-federation/enhanced": "^2.8.2",
+    "@mfe/cart-store": "*",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "react-router-dom": "^7.18.2"
   },
   "devDependencies": {
     "@babel/core": "^7.29.7",
@@ -24,7 +29,7 @@
     "@types/react-dom": "^19.2.4",
     "babel-loader": "^10.1.1",
     "html-webpack-plugin": "^5.6.8",
-    "typescript": "^7.0.2",
+    "typescript": "5.5.4",
     "webpack": "^5.109.2",
     "webpack-cli": "^7.2.2",
     "webpack-dev-server": "^5.2.6"

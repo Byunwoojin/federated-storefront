@@ -1,26 +1,29 @@
-const { ModuleFederationPlugin } = require("webpack").container;
 const path = require("path");
+
+const {
+  ModuleFederationPlugin,
+} = require("@module-federation/enhanced/webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+
+const { remotes } = require("./src/remotes.config.js");
 
 module.exports = (env, argv) => {
   const isDev = argv.mode === "development";
 
-  const catalogRemoteUrl = isDev
-    ? "catalog_remote@http://localhost:3003/remoteEntry.js"
-    : "catalog_remote@https://catalog-remote.vercel.app/remoteEntry.js";
-
-  const cartRemoteUrl = isDev
-    ? "cart_remote@http://localhost:3004/remoteEntry.js"
-    : "cart_remote@https://cart-remote-murex.vercel.app/remoteEntry.js";
+  const mfRemotes = Object.fromEntries(
+    remotes.map((r) => [r.name, `${r.name}@${isDev ? r.devUrl : r.prodUrl}`]),
+  );
 
   return {
     entry: "./src/index.ts",
     mode: isDev ? "development" : "production",
     devServer: {
       port: 3000,
+      historyApiFallback: true,
     },
     output: {
       path: path.resolve(__dirname, "dist"),
+      publicPath: "/",
     },
     module: {
       rules: [
@@ -37,13 +40,13 @@ module.exports = (env, argv) => {
     plugins: [
       new ModuleFederationPlugin({
         name: "host",
-        remotes: {
-          catalog_remote: catalogRemoteUrl,
-          cart_remote: cartRemoteUrl,
-        },
+        remotes: mfRemotes,
+        dts: false,
         shared: {
           react: { singleton: true },
           "react-dom": { singleton: true },
+          "react-router-dom": { singleton: true },
+          "@mfe/cart-store": { singleton: true },
         },
       }),
       new HtmlWebpackPlugin({ template: "./public/index.html" }),

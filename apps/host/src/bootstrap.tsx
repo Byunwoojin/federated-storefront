@@ -1,40 +1,70 @@
-import "catalog_remote/styles";
-import "cart_remote/styles";
 import "@mfe/design-system/dist/style.css";
+import { Button, NavBar } from "@mfe/design-system";
+import { loadRemote } from "@module-federation/enhanced/runtime";
+import { Suspense } from "react";
 import { createRoot } from "react-dom/client";
-import { Suspense, lazy, useState } from "react";
-import { Button } from "@mfe/design-system";
+import { BrowserRouter, Link, Navigate, Route, Routes } from "react-router-dom";
 
-const CatalogPage = lazy(() => import("catalog_remote/CatalogPage"));
-const CartPage = lazy(() => import("cart_remote/CartPage"));
+import { loadPages, PageConfig } from "./pages";
+import { remotes } from "./remotes.config";
 
-type Tab = "catalog" | "cart";
+async function loadRemoteStyles() {
+  await Promise.allSettled(remotes.map((r) => loadRemote(`${r.name}/styles`)));
+}
 
-function App() {
-  const [tab, setTab] = useState<Tab>("catalog");
+function App({ pages }: { pages: PageConfig[] }) {
+  if (pages.length === 0) {
+    return (
+      <p style={{ padding: 24 }}>
+        불러올 수 있는 페이지가 없습니다. remote 서버가 떠 있는지 확인해주세요.
+      </p>
+    );
+  }
+
+  const defaultPath = pages.find((page) => page.nav)?.path ?? pages[0].path;
 
   return (
-    <div>
-      <nav
-        style={{
-          display: "flex",
-          gap: 8,
-          padding: 16,
-          borderBottom: "1px solid #E2E8F0",
-        }}
-      >
-        <Button onClick={() => setTab("catalog")}>상품 목록</Button>
-        <Button onClick={() => setTab("cart")}>장바구니</Button>
-      </nav>
+    <BrowserRouter>
+      <NavBar>
+        {pages
+          .filter((page) => page.nav)
+          .map((page) => (
+            <Link key={page.path} to={page.path}>
+              <Button>{page.label}</Button>
+            </Link>
+          ))}
+      </NavBar>
 
       <Suspense fallback={<p style={{ padding: 24 }}>불러오는 중...</p>}>
-        {tab === "catalog" ? <CatalogPage /> : <CartPage />}
+        <Routes>
+          <Route path="/" element={<Navigate to={defaultPath} replace />} />
+          {pages.map((page) => (
+            <Route
+              key={page.path}
+              path={page.path}
+              element={<page.component />}
+            />
+          ))}
+          <Route
+            path="*"
+            element={
+              <div style={{ padding: 24 }}>
+                <p>페이지를 찾을 수 없습니다.</p>
+                <Link to={defaultPath}>홈으로</Link>
+              </div>
+            }
+          />
+        </Routes>
       </Suspense>
-    </div>
+    </BrowserRouter>
   );
 }
 
-const container = document.getElementById("root");
-if (container) {
-  createRoot(container).render(<App />);
+async function main() {
+  const [, pages] = await Promise.all([loadRemoteStyles(), loadPages()]);
+  const container = document.getElementById("root");
+  if (container) {
+    createRoot(container).render(<App pages={pages} />);
+  }
 }
+main();
