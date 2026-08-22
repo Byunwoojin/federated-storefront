@@ -9,6 +9,7 @@ export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   const product = products.find((p) => p.id === id);
   const addItem = useCartStore((state) => state.addItem);
+  const cartItems = useCartStore((state) => state.items);
   const orderedQuantityByProductId = useStockStore(
     (state) => state.orderedQuantityByProductId,
   );
@@ -32,7 +33,9 @@ export default function ProductDetailPage() {
   }
   const remaining = Math.max(
     0,
-    product.stock - (orderedQuantityByProductId[product.id] ?? 0),
+    product.stock -
+      (orderedQuantityByProductId[product.id] ?? 0) -
+      (cartItems.find((item) => item.productId === product.id)?.quantity ?? 0),
   );
   const soldOut = remaining === 0;
 
@@ -63,15 +66,13 @@ export default function ProductDetailPage() {
             className="aspect-square w-[320px] rounded-lg object-cover"
           />
           <div>
-            <h1 className="text-heading text-text-primary">
-              {product.name}
-            </h1>
+            <h1 className="text-heading text-text-primary">{product.name}</h1>
             <p className="mt-2 text-price-text text-price">
               {product.price.toLocaleString()}원
             </p>
             {!soldOut && quantity >= remaining && (
               <p className="mt-2 text-sm text-red-500">
-                재고한도({remaining})개 까지 담았어요
+                ({remaining})개 까지만 더 담을 수 있어요
               </p>
             )}
             <div className="mt-4">

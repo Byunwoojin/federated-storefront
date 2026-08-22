@@ -8,6 +8,8 @@ import { products } from "../data/products";
 export default function CatalogPage() {
   const navigate = useNavigate();
   const addItem = useCartStore((state) => state.addItem);
+  const cartItems = useCartStore((state) => state.items);
+
   const orderedQuantityByProductId = useStockStore(
     (state) => state.orderedQuantityByProductId,
   );
@@ -34,7 +36,10 @@ export default function CatalogPage() {
           {products.map((p) => {
             const remaining = Math.max(
               0,
-              p.stock - (orderedQuantityByProductId[p.id] ?? 0),
+              p.stock -
+                (orderedQuantityByProductId[p.id] ?? 0) -
+                (cartItems.find((item) => item.productId === p.id)?.quantity ??
+                  0),
             );
             return (
               <Card

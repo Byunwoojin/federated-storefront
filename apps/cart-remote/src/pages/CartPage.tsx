@@ -39,7 +39,6 @@ export default function CartPage() {
       setSearchParams({}, { replace: true });
     }
     // 체크아웃에서 넘어왔을 때 한 번만 확인하면 되므로 마운트 시에만 실행
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleConfirmDelete = () => {
@@ -91,44 +90,50 @@ export default function CartPage() {
         )}
 
         <ul className="mt-4 flex flex-col gap-4">
-          {items.map((item) => (
-            <li
-              key={item.productId}
-              className="flex flex-col gap-3 border border-border p-4 sm:flex-row sm:items-center sm:justify-between"
-            >
-              <div>
-                <p className="font-medium">{item.name}</p>
-                <p className="text-text-secondary">
-                  {item.price.toLocaleString()}원
-                </p>
-                {item.quantity >= item.stock && (
-                  <p className="text-sm text-red-500">
-                    재고한도({item.stock})개 까지 담았어요
+          {items.map((item) => {
+            const availableForThisItem = Math.max(
+              0,
+              item.stock - (orderedQuantityByProductId[item.productId] ?? 0),
+            );
+            return (
+              <li
+                key={item.productId}
+                className="flex flex-col gap-3 border border-border p-4 sm:flex-row sm:items-center sm:justify-between"
+              >
+                <div>
+                  <p className="font-medium">{item.name}</p>
+                  <p className="text-text-secondary">
+                    {item.price.toLocaleString()}원
                   </p>
-                )}
-              </div>
-              <div className="flex items-center gap-2">
-                <QuantityStepper
-                  quantity={item.quantity}
-                  onDecrement={() => decrement(item.productId)}
-                  onIncrement={() => increment(item.productId)}
-                  decrementDisabled={item.quantity <= 1}
-                  incrementDisabled={item.quantity >= item.stock}
-                />
-                <button
-                  onClick={() =>
-                    setPendingDelete({
-                      productId: item.productId,
-                      name: item.name,
-                    })
-                  }
-                  className="ml-2 text-sm text-text-secondary underline"
-                >
-                  삭제
-                </button>
-              </div>
-            </li>
-          ))}
+                  {item.quantity >= availableForThisItem && (
+                    <p className="text-sm text-red-500">
+                      재고한도({availableForThisItem})개 까지 담았어요
+                    </p>
+                  )}
+                </div>
+                <div className="flex items-center gap-2">
+                  <QuantityStepper
+                    quantity={item.quantity}
+                    onDecrement={() => decrement(item.productId)}
+                    onIncrement={() => increment(item.productId)}
+                    decrementDisabled={item.quantity <= 1}
+                    incrementDisabled={item.quantity >= availableForThisItem}
+                  />
+                  <button
+                    onClick={() =>
+                      setPendingDelete({
+                        productId: item.productId,
+                        name: item.name,
+                      })
+                    }
+                    className="ml-2 text-sm text-text-secondary underline"
+                  >
+                    삭제
+                  </button>
+                </div>
+              </li>
+            );
+          })}
         </ul>
         <div className="mt-6 flex items-center justify-between">
           <p className="text-lg font-semibold">
