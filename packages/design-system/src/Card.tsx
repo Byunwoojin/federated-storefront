@@ -3,6 +3,8 @@ interface CardProps {
   name: string;
   price: number;
   onAddToCart?: () => void;
+  onClick?: () => void;
+  soldOut?: boolean;
 }
 
 export default function Card({
@@ -10,9 +12,14 @@ export default function Card({
   name,
   price,
   onAddToCart,
+  onClick,
+  soldOut = false,
 }: CardProps) {
   return (
-    <div className="max-w-[240px] overflow-hidden rounded-lg border border-border bg-surface">
+    <div
+      onClick={onClick}
+      className="w-full overflow-hidden rounded-lg border border-border bg-surface"
+    >
       <img
         src={imageUrl}
         alt={name}
@@ -24,10 +31,14 @@ export default function Card({
           {price.toLocaleString()}원
         </p>
         <button
-          onClick={onAddToCart}
-          className="w-full cursor-pointer rounded-md border-0 bg-primary py-2 text-white"
+          onClick={(e) => {
+            e.stopPropagation();
+            onAddToCart?.();
+          }}
+          disabled={soldOut}
+          className={`w-full rounded-md border-0 bg-primary py-2 text-white ${soldOut ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
         >
-          담기
+          {soldOut ? "품절" : "담기"}
         </button>
       </div>
     </div>

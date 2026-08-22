@@ -6,7 +6,13 @@
   "scripts": {
     "build": "npm run build:css",
     "build:css": "tailwindcss -i ./src/index.css -o ./dist/style.css",
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix"
+  },
+  "peerDependencies": {
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.29.7",
@@ -22,6 +28,6 @@
     "jest": "^30.4.2",
     "jest-environment-jsdom": "^30.4.1",
     "tailwindcss": "^4.3.3",
-    "typescript": "^7.0.2"
+    "typescript": "5.5.4"
   }
 }

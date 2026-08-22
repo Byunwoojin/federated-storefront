@@ -21,7 +21,7 @@ export default function Modal({
       onClick={onClose}
     >
       <div
-        className="mx-auto mt-[10$] w-[300px] bg-surface p-6"
+        className="mx-auto mt-10 w-[300px] bg-surface p-6"
         onClick={(e) => e.stopPropagation()}
       >
         <h2 className="text-heading text-text-primary">{title}</h2>
