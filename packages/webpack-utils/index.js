@@ -1,9 +1,17 @@
 const fs = require("fs");
 const path = require("path");
 
+const {
+  ModuleFederationPlugin,
+} = require("@module-federation/enhanced/webpack");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+
 function discoverPageFiles(pagesDir) {
-  return fs.readdirSync(pagesDir).filter((f) => /\.(tsx|jsx)$/.test(f) 
-  && !/\.(test|spec)\.(tsx|jsx)$/.test(f),)
+  return fs
+    .readdirSync(pagesDir)
+    .filter(
+      (f) => /\.(tsx|jsx)$/.test(f) && !/\.(test|spec)\.(tsx|jsx)$/.test(f),
+    );
 }
 
 function buildPageExposes(pagesDir) {
@@ -62,5 +70,66 @@ class PagesManifestPlugin {
     });
   }
 }
+function createRemoteWebpackConfig({ name, port, dirname }) {
+  const pagesDir = path.resolve(dirname, "src/pages");
 
-module.exports = { buildPageExposes, buildPagesManifest, PagesManifestPlugin };
+  return {
+    entry: "./src/index.ts",
+    mode: "development",
+    devServer: {
+      port,
+      historyApiFallback: true,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
+    },
+    output: {
+      path: path.resolve(dirname, "dist"),
+    },
+    module: {
+      rules: [
+        {
+          test: /\.(js|jsx|ts|tsx)$/,
+          exclude: /node_modules/,
+          use: "babel-loader",
+        },
+        {
+          test: /\.css$/,
+          use: ["style-loader", "css-loader", "postcss-loader"],
+        },
+      ],
+    },
+    resolve: {
+      extensions: [".tsx", ".ts", ".js", ".jsx"],
+    },
+    plugins: [
+      new ModuleFederationPlugin({
+        name,
+        filename: "remoteEntry.js",
+        exposes: {
+          ...buildPageExposes(pagesDir),
+          "./styles": "./src/styles-entry",
+        },
+        dts: {
+          generateTypes: {
+            compilerInstance: "tsc",
+          },
+        },
+        shared: {
+          react: { singleton: true },
+          "react-dom": { singleton: true },
+          "react-router-dom": { singleton: true },
+          "@mfe/cart-store": { singleton: true },
+        },
+      }),
+      new PagesManifestPlugin(buildPagesManifest(pagesDir, name)),
+      new HtmlWebpackPlugin({ template: "./public/index.html" }),
+    ],
+  };
+}
+module.exports = {
+  buildPageExposes,
+  buildPagesManifest,
+  PagesManifestPlugin,
+  createRemoteWebpackConfig,
+};
