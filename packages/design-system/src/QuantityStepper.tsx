@@ -22,7 +22,9 @@ export default function QuantityStepper({
       >
         -
       </button>
-      <span className="w-6 text-center">{quantity}</span>
+      <span aria-label="현재 수량" className="w-6 text-center">
+        {quantity}
+      </span>
       <button
         onClick={onIncrement}
         disabled={incrementDisabled}

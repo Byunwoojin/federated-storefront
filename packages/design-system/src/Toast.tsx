@@ -16,7 +16,10 @@ export default function Toast({
   }, [message, duration, onDismiss]);
 
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 rounded-md bg-text-primary px-4 py-2 text-white shadow-lg">
+    <div
+      role="status"
+      className="fixed bottom-6 left-1/2 -translate-x-1/2 rounded-md bg-text-primary px-4 py-2 text-white shadow-lg"
+    >
       {message}
     </div>
   );

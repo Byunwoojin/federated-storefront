@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/react";
 import Toast from "./Toast";
 test("message가 화면에 보인다", () => {
   render(<Toast message="담았습니다" onDismiss={() => {}} />);
-  expect(screen.getByText("담았습니다")).toBeInTheDocument();
+  expect(screen.getByRole("status")).toHaveTextContent("담았습니다");
 });
 
 test("duration이 지나면 onDismiss가 호출된다", () => {
@@ -21,5 +21,3 @@ test("duration이 지나면 onDismiss가 호출된다", () => {
   expect(handleDismiss).toHaveBeenCalledTimes(1);
   jest.useRealTimers();
 });
-
-
