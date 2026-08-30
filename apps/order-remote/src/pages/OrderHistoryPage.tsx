@@ -27,7 +27,7 @@ export default function OrderHistoryPage() {
         {/* 데스크탑: 테이블*/}
         <table className="hidden md:table mt-4 w-full border-collapse">
           <thead>
-            <tr className="horder-b text-left text-text-secondary">
+            <tr className="border-b text-left text-text-secondary">
               <th className="py-2">주문번호</th>
               <th className="py-2">상품</th>
               <th className="py-2">금액</th>
