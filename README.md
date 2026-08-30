@@ -1,5 +1,7 @@
 # federated-storefront
 
+**배포된 프로젝트**: https://federated-storefront.vercel.app/
+
 Webpack5 Module Federation으로 여러 독립 배포 앱이 하나의 디자인 시스템을 공유하는
 마이크로 프론트엔드(MFE) 프로젝트. Turborepo 기반 모노레포로, host 셸이 catalog-remote·
 cart-remote·order-remote를 런타임에 조합하며, 각 앱은 서로 재빌드 없이 독립적으로 배포된다.
@@ -54,6 +56,13 @@ host를 열기 전에 remote들이 먼저 떠 있어야 `remoteEntry.js`를 정�
 하나가 안 떠 있어도 그 remote의 페이지만 nav/라우트에서 빠질 뿐 host 자체는 정상 동작한다).
 
 ## 배포
+
+| 앱             | 배포 링크                                     |
+| -------------- | ---------------------------------------------- |
+| host           | https://federated-storefront.vercel.app/       |
+| catalog-remote | https://catalog-remote.vercel.app              |
+| cart-remote    | https://cart-remote-murex.vercel.app           |
+| order-remote   | https://federated-storefront-rsev.vercel.app   |
 
 각 앱은 독립된 Vercel 프로젝트로 배포된다(저장소는 하나, Vercel 프로젝트는 앱 수만큼).
 GitHub 저장소를 Vercel과 연결하고, 프로젝트별로 **Root Directory**를 아래처럼 지정한다.
