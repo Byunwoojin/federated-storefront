@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "npm run build --workspace=@mfe/design-system && tsc --noEmit && webpack --mode production",
+    "build": "npm run build --workspace=@mfe/design-system && npm run build --workspace=@mfe/cart-store && npm run build --workspace=@mfe/webpack-utils && tsc --noEmit && webpack --mode production",
     "dev": "webpack serve --mode development",
     "lint": "eslint src"
   },
@@ -13,6 +13,7 @@
   "description": "",
   "dependencies": {
     "@mfe/design-system": "*",
+    "@mfe/cart-store": "*",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-router-dom": "^7.18.2"
