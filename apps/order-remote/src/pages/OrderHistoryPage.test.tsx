@@ -44,7 +44,7 @@ test("주문 정보가 화면에 보인다.", () => {
   render(<OrderHistoryPage />);
 
   expect(screen.getAllByText("ORD-1").length).toBeGreaterThan(0);
-  expect(screen.getAllByText("기본 반팔 티셔츠").length).toBeGreaterThan(0);
+  expect(screen.getAllByText("기본 반팔 티셔츠 x 2").length).toBeGreaterThan(0);
   expect(screen.getAllByText("30,000원").length).toBeGreaterThan(0);
   expect(screen.getAllByText("주문완료").length).toBeGreaterThan(0);
 });

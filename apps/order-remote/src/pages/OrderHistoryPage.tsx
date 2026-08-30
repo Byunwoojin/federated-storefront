@@ -40,7 +40,9 @@ export default function OrderHistoryPage() {
               <tr key={order.orderId} className="border-b">
                 <td className="py-3">{order.orderId}</td>
                 <td className="py-3">
-                  {order.items.map((i) => i.name).join(", ")}
+                  {order.items
+                    .map((i) => `${i.name} x ${i.quantity}`)
+                    .join(", ")}
                 </td>
                 <td className="py-3">{order.subtotal.toLocaleString()}원</td>
                 <td className="py-3">
@@ -67,7 +69,7 @@ export default function OrderHistoryPage() {
             <li key={order.orderId} className="border rounded-lg p-4">
               <p className="text-sm text-text-secondary">{order.orderId}</p>
               <p className="mt-1">
-                {order.items.map((i) => i.name).join(", ")}
+                {order.items.map((i) => `${i.name} x ${i.quantity}`).join(", ")}
               </p>
               <p className="mt-1 font-semibold">
                 {order.subtotal.toLocaleString()}원
