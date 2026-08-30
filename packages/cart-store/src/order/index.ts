@@ -19,11 +19,14 @@ interface OrderState {
   updateStatus: (orderId: string, status: OrderStatus) => void;
 }
 
+let orderSequence = 0;
+
 export const useOrderStore = create<OrderState>()((set) => ({
   orders: [],
 
   placeOrder: (items, subtotal) => {
-    const orderId = `ORD-${Date.now()}`;
+    orderSequence += 1;
+    const orderId = `ORD-${Date.now()}-${orderSequence}`;
     set((state) => ({
       orders: [
         { orderId, items, subtotal, status: "placed", createdAt: Date.now() },

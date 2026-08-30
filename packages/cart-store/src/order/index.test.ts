@@ -32,9 +32,10 @@ test("placeOrder: 주문을 생성하고 orderId를 반환한다", () => {
 });
 
 test("placeOrder: 여러 번 주문하면 최신 주문이 맨 앞에 온다", () => {
-  useOrderStore.getState().placeOrder(items, 10000);
+  const firstOrderId = useOrderStore.getState().placeOrder(items, 10000);
   const secondOrderId = useOrderStore.getState().placeOrder(items, 20000);
 
+  expect(secondOrderId).not.toBe(firstOrderId);
   expect(useOrderStore.getState().orders[0].orderId).toBe(secondOrderId);
   expect(useOrderStore.getState().orders).toHaveLength(2);
 });
