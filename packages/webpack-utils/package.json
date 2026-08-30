@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "build": "echo \"@mfe/webpack-utils: no build step needed\"",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"@mfe/webpack-utils: no tests\""
   },
   "keywords": [],
   "author": "",
