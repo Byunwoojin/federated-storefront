@@ -2,6 +2,7 @@ node_modules/
 dist/
 .turbo/
 .vercel/
+.mf/
 *.log
 npm-debug.log*
 .env
