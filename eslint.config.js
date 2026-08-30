@@ -1,6 +1,7 @@
 const js = require("@eslint/js");
 const importPlugin = require("eslint-plugin-import");
 const globals = require("globals");
+const tailwindcss = require("eslint-plugin-tailwindcss");
 const tseslint = require("typescript-eslint");
 
 module.exports = tseslint.config(
@@ -48,6 +49,20 @@ module.exports = tseslint.config(
     files: ["apps/*/src/**/*.{ts,tsx}"],
     languageOptions: {
       globals: globals.browser,
+    },
+  },
+  //Tailwind 클래스명 오타 검증 (remote별 스코프 클래스는 화이트리스트 처리)
+  {
+    files: ["apps/*/src/**/*.{ts,tsx}"],
+    plugins: { tailwindcss },
+    settings: {
+      tailwindcss: { cssConfigPath: "src/styles.css" },
+    },
+    rules: {
+      "tailwindcss/no-custom-classname": [
+        "warn",
+        { whitelist: ["^\\S+-remote-scope$"] },
+      ],
     },
   },
   // Node에서 실행되는 빌드 설정/스크립트 (webpack.config.js, *.meta.js 등)
