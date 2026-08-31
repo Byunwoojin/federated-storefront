@@ -17,7 +17,7 @@ const remotes = [
   {
     name: "ops_remote",
     devUrl: "http://localhost:3006/remoteEntry.js",
-    prodUrl: "https://REPLACE_WITH_VERCEL_URL.vercel.app/remoteEntry.js", // TODO: Vercel 배포 후 실제 URL로 교체
+    prodUrl: "https://ops-remote.vercel.app/remoteEntry.js",
   },
 ];
 
