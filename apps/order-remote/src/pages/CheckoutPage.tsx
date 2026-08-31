@@ -6,6 +6,7 @@ import {
   useStockStore,
 } from "@mfe/cart-store";
 import { Button, EmptyState } from "@mfe/design-system";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 export default function CheckoutPage() {
   const navigate = useNavigate();
@@ -16,8 +17,9 @@ export default function CheckoutPage() {
   const orderQuantityByProductId = useStockStore(
     (state) => state.orderedQuantityByProductId,
   );
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  if (items.length === 0) {
+  if (items.length === 0 && !isSubmitting) {
     return (
       <div className="order-remote-scope">
         <div className="p-6">
@@ -36,9 +38,10 @@ export default function CheckoutPage() {
       navigate("/cart?stockIssue=1");
       return;
     }
+    setIsSubmitting(true);
     const orderId = placeOrder(items, subtotal);
-    clearCart();
     navigate(`/order-complete?orderId=${orderId}`);
+    clearCart();
   };
 
   return (
