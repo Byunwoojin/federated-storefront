@@ -1,6 +1,6 @@
 import "@mfe/design-system/dist/style.css";
 import { Button, NavBar } from "@mfe/design-system";
-import { loadRemote } from "@module-federation/enhanced/runtime";
+import { loadRemote, preloadRemote } from "@module-federation/enhanced/runtime";
 import { Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Link, Navigate, Route, Routes } from "react-router-dom";
@@ -29,7 +29,15 @@ function App({ pages }: { pages: PageConfig[] }) {
         {pages
           .filter((page) => page.nav)
           .map((page) => (
-            <Link key={page.path} to={page.path}>
+            <Link
+              key={page.path}
+              to={page.path}
+              onMouseEnter={() =>
+                preloadRemote([
+                  { nameOrAlias: page.remote, resourceCategory: "sync" },
+                ]).catch(() => {})
+              }
+            >
               <Button>{page.label}</Button>
             </Link>
           ))}

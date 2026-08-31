@@ -5,6 +5,7 @@ interface CardProps {
   onAddToCart?: () => void;
   onClick?: () => void;
   soldOut?: boolean;
+  priority?: boolean;
 }
 
 export default function Card({
@@ -14,6 +15,7 @@ export default function Card({
   onAddToCart,
   onClick,
   soldOut = false,
+  priority = false,
 }: CardProps) {
   return (
     <div
@@ -24,6 +26,7 @@ export default function Card({
         src={imageUrl}
         alt={name}
         className="aspect-square w-full object-cover"
+        fetchPriority={priority ? "high" : "auto"}
       />
       <div className="p-3">
         <p className="mb-1 text-body text-text-primary">{name}</p>

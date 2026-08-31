@@ -8,6 +8,7 @@ export interface PageConfig {
   label: string;
   component: ComponentType;
   nav: boolean;
+  remote: string;
 }
 
 interface RemotePageEntry {
@@ -37,14 +38,21 @@ function isRemotePagesManifest(value: unknown): value is RemotePagesManifest {
   );
 }
 
-function loadRemotePage(remoteName: string, exposedModule: string, label: string) {
+function loadRemotePage(
+  remoteName: string,
+  exposedModule: string,
+  label: string,
+) {
   const message = `${label}을 불러올 수 없습니다. 잠시 후 다시 시도해주세요.`;
 
   return lazy(
     () =>
       loadRemote<{ default: ComponentType }>(`${remoteName}/${exposedModule}`)
         .then((mod) => {
-          if (!mod) throw new Error(`remote module not found: ${remoteName}/${exposedModule}`);
+          if (!mod)
+            throw new Error(
+              `remote module not found: ${remoteName}/${exposedModule}`,
+            );
           return mod;
         })
         .catch(() => ({
@@ -62,7 +70,8 @@ async function fetchManifest(remote: {
   devUrl: string;
   prodUrl: string;
 }): Promise<RemotePagesManifest | null> {
-  const entryUrl = process.env.NODE_ENV === "production" ? remote.prodUrl : remote.devUrl;
+  const entryUrl =
+    process.env.NODE_ENV === "production" ? remote.prodUrl : remote.devUrl;
 
   try {
     const origin = new URL(entryUrl).origin;
@@ -70,7 +79,10 @@ async function fetchManifest(remote: {
     if (!res.ok) return null;
     const data = await res.json();
     if (!isRemotePagesManifest(data)) {
-      console.error(`${remote.name}의 pages-manifest.json 형식이 올바르지 않습니다.`, data);
+      console.error(
+        `${remote.name}의 pages-manifest.json 형식이 올바르지 않습니다.`,
+        data,
+      );
       return null;
     }
     return data;
@@ -90,6 +102,7 @@ export async function loadPages(): Promise<PageConfig[]> {
         path: page.path,
         label: page.label,
         nav: page.nav ?? true,
+        remote: m.remote,
         component: loadRemotePage(m.remote, page.exposedModule, page.label),
       })),
     );

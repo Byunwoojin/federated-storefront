@@ -33,7 +33,7 @@ export default function CatalogPage() {
       <div className="p-6">
         <h1 className="text-heading text-text-primary">상품 목록</h1>
         <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-          {products.map((p) => {
+          {products.map((p, index) => {
             const remaining = Math.max(
               0,
               remainingStock(p.stock, p.id, orderedQuantityByProductId) -
@@ -48,6 +48,7 @@ export default function CatalogPage() {
                 price={p.price}
                 soldOut={remaining <= 0}
                 onClick={() => navigate(`/catalog/${p.id}`)}
+                priority={index === 0}
                 onAddToCart={() => handleAddToCart(p.name, p)}
               />
             );
