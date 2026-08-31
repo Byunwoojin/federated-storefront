@@ -147,13 +147,11 @@ export default function CartPage() {
           isOpen={pendingDelete !== null}
           onClose={() => setPendingDelete(null)}
           title="상품 삭제"
+          actions={<Button onClick={handleConfirmDelete}>삭제</Button>}
         >
           <p className="mt-2 text-text-secondary">
             {pendingDelete?.name}을(를) 삭제할까요?
           </p>
-          <div className="mt-4">
-            <Button onClick={handleConfirmDelete}>삭제</Button>
-          </div>
         </Modal>
       </div>
     </div>
